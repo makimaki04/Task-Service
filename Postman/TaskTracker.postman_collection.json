@@ -1,0 +1,294 @@
+{
+  "info": {
+    "_postman_id": "c85abee4-0bee-42b1-991b-52564d9b25ec",
+    "name": "TaskTracker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "32839196"
+  },
+  "item": [
+    {
+      "name": "Post basic task",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Позвонить пациенту Петрову\",\r\n  \"description\": \"Уточнить результаты анализов\",\r\n  \"status\": \"new\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tasks",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create daily template",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Ежедневный обзвон пациентов\",\r\n  \"description\": \"Проверить самочувствие пациентов\",\r\n  \"recurrence\": {\r\n    \"type\": \"daily\",\r\n    \"every_n_days\": 2\r\n  },\r\n  \"start_date\": \"2026-04-09T00:00:00Z\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create monthly template",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Ежемесячный отчет\",\r\n  \"description\": \"Подготовить отчет по отделению\",\r\n  \"recurrence\": {\r\n    \"type\": \"monthly\",\r\n    \"day_of_month\": 15\r\n  },\r\n  \"start_date\": \"2026-04-09T00:00:00Z\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create specific date template",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Инвентаризация\",\r\n  \"description\": \"Проверить остатки расходников\",\r\n  \"recurrence\": {\r\n    \"type\": \"specific_dates\",\r\n    \"specific_dates\": [\r\n      \"2026-04-10T00:00:00Z\",\r\n      \"2026-04-15T00:00:00Z\",\r\n      \"2026-04-22T00:00:00Z\"\r\n    ]\r\n  },\r\n  \"start_date\": \"2026-04-09T00:00:00Z\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create parity template",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Формирование отчетности\",\r\n  \"description\": \"Работа по четным дням месяца\",\r\n  \"recurrence\": {\r\n    \"type\": \"month_parity\",\r\n    \"month_parity\": \"even\"\r\n  },\r\n  \"start_date\": \"2026-04-09T00:00:00Z\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get templates list",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/templates",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete template",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/templates/2",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get template by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/templates/2",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get tasks list",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update template by id",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Ежедневный обзвон пациентов\",\r\n  \"description\": \"Обновленное описание\",\r\n  \"recurrence\": {\r\n    \"type\": \"daily\",\r\n    \"every_n_days\": 1\r\n  },\r\n  \"start_date\": \"2026-04-09T00:00:00Z\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/templates/2",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update specific dates",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"Инвентаризация\",\r\n  \"description\": \"Новый список дат\",\r\n  \"recurrence\": {\r\n    \"type\": \"specific_dates\",\r\n    \"specific_dates\": [\r\n      \"2026-04-12T00:00:00Z\",\r\n      \"2026-04-18T00:00:00Z\"\r\n    ]\r\n  },\r\n  \"start_date\": \"2026-04-09T00:00:00Z\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/templates/4",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "templates",
+            "4"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    }
+  ]
+}
