@@ -10,11 +10,11 @@ import (
 )
 
 type Service struct {
-	repo Repository
+	repo TaskRepository
 	now  func() time.Time
 }
 
-func NewService(repo Repository) *Service {
+func NewService(repo TaskRepository) *Service {
 	return &Service{
 		repo: repo,
 		now:  func() time.Time { return time.Now().UTC() },
