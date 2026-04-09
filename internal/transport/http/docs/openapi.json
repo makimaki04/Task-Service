@@ -266,7 +266,21 @@
         "description": "Resource not found",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": { "$ref": "#/components/schemas/Error" },
+            "examples": {
+              "taskNotFound": {
+                "summary": "Task not found",
+                "value": {
+                  "error": "task not found"
+                }
+              },
+              "templateNotFound": {
+                "summary": "Template not found",
+                "value": {
+                  "error": "template not found"
+                }
+              }
+            }
           }
         }
       }
@@ -457,7 +471,7 @@
       "Error": {
         "type": "object",
         "properties": {
-          "error": { "type": "string", "example": "task not found" }
+          "error": { "type": "string", "example": "resource not found" }
         }
       }
     }

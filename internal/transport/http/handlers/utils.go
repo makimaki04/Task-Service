@@ -45,6 +45,8 @@ func writeUsecaseError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, taskdomain.ErrTaskNotFound):
 		writeError(w, http.StatusNotFound, err)
+	case errors.Is(err, taskdomain.ErrTempalteNotFound):
+		writeError(w, http.StatusNotFound, err)
 	case errors.Is(err, templateusecase.ErrInvalidInput) || errors.Is(err, taskusecase.ErrInvalidInput):
 		writeError(w, http.StatusBadRequest, err)
 	default:
