@@ -14,6 +14,10 @@
     {
       "name": "Tasks",
       "description": "Operations with tasks"
+    },
+    {
+      "name": "Templates",
+      "description": "Operations with recurring task templates"
     }
   ],
   "paths": {
@@ -52,6 +56,48 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/Task" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" }
+        }
+      }
+    },
+    "/api/v1/templates": {
+      "get": {
+        "tags": ["Templates"],
+        "summary": "List templates",
+        "responses": {
+          "200": {
+            "description": "Template list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Template" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Templates"],
+        "summary": "Create template",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TemplateMutationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created template and generated tasks",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TemplateMutationResponse" }
               }
             }
           },
@@ -131,6 +177,79 @@
           "404": { "$ref": "#/components/responses/NotFound" }
         }
       }
+    },
+    "/api/v1/templates/{id}": {
+      "get": {
+        "tags": ["Templates"],
+        "summary": "Get template by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64", "minimum": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Template",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Template" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "put": {
+        "tags": ["Templates"],
+        "summary": "Update template",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64", "minimum": 1 }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TemplateMutationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated template and generated tasks",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TemplateMutationResponse" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "delete": {
+        "tags": ["Templates"],
+        "summary": "Deactivate template",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64", "minimum": 1 }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Template deactivated" },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      }
     }
   },
   "components": {
@@ -195,6 +314,7 @@
         "type": "object",
         "properties": {
           "id": { "type": "integer", "format": "int64", "example": 1 },
+          "template_id": { "type": "integer", "format": "int64", "nullable": true, "example": 10 },
           "title": { "type": "string", "example": "Prepare release" },
           "description": {
             "type": "string",
@@ -205,6 +325,12 @@
             "enum": ["new", "in_progress", "done"],
             "example": "new"
           },
+          "scheduled_for": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-04-15T00:00:00Z"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -214,6 +340,117 @@
             "type": "string",
             "format": "date-time",
             "example": "2026-03-24T00:00:00Z"
+          }
+        }
+      },
+      "Recurrence": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["daily", "monthly", "specific_dates", "month_parity"],
+            "example": "daily"
+          },
+          "every_n_days": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 2
+          },
+          "day_of_month": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30,
+            "example": 15
+          },
+          "month_parity": {
+            "type": "string",
+            "enum": ["even", "odd"],
+            "example": "even"
+          },
+          "specific_dates": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "TemplateMutationRequest": {
+        "type": "object",
+        "required": ["title", "recurrence", "start_date"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Ежедневный обзвон пациентов"
+          },
+          "description": {
+            "type": "string",
+            "example": "Проверить самочувствие пациентов"
+          },
+          "recurrence": {
+            "$ref": "#/components/schemas/Recurrence"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-09T00:00:00Z"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-05-09T00:00:00Z"
+          }
+        }
+      },
+      "Template": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64", "example": 1 },
+          "title": { "type": "string", "example": "Ежедневный обзвон пациентов" },
+          "description": {
+            "type": "string",
+            "example": "Проверить самочувствие пациентов"
+          },
+          "recurrence": { "$ref": "#/components/schemas/Recurrence" },
+          "start_date": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-09T00:00:00Z"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2026-05-09T00:00:00Z"
+          },
+          "active": {
+            "type": "boolean",
+            "example": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-09T12:07:55Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-04-09T12:07:55Z"
+          }
+        }
+      },
+      "TemplateMutationResponse": {
+        "type": "object",
+        "properties": {
+          "template": {
+            "$ref": "#/components/schemas/Template"
+          },
+          "tasks": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Task" }
           }
         }
       },
