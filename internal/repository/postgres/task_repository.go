@@ -44,7 +44,7 @@ func (r *TaskRepository) GetByID(ctx context.Context, id int64) (*taskdomain.Tas
 	found, err := scanTask(row)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, taskdomain.ErrNotFound
+			return nil, taskdomain.ErrTaskNotFound
 		}
 
 		return nil, err
@@ -68,7 +68,7 @@ func (r *TaskRepository) Update(ctx context.Context, task *taskdomain.Task) (*ta
 	updated, err := scanTask(row)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, taskdomain.ErrNotFound
+			return nil, taskdomain.ErrTaskNotFound
 		}
 
 		return nil, err
@@ -86,7 +86,7 @@ func (r *TaskRepository) Delete(ctx context.Context, id int64) error {
 	}
 
 	if result.RowsAffected() == 0 {
-		return taskdomain.ErrNotFound
+		return taskdomain.ErrTaskNotFound
 	}
 
 	return nil

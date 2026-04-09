@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"errors"
+	"database/sql"
 	"time"
 
 	taskdomain "example.com/taskservice/internal/domain/task"
@@ -150,7 +151,7 @@ func (r *TemplateRepository) UpdateTemplate(ctx context.Context, template *taskd
 	created, err := scanTemplate(row)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, taskdomain.ErrNotFound
+			return nil, taskdomain.ErrTempalteNotFound
 		}
 		return nil, err
 	}
@@ -169,7 +170,7 @@ func (r *TemplateRepository) GetByID(ctx context.Context, id int64) (*taskdomain
 	found, err := scanTemplate(row)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, taskdomain.ErrNotFound
+			return nil, taskdomain.ErrTempalteNotFound
 		}
 		return nil, err
 	}
@@ -236,7 +237,7 @@ func (r *TemplateRepository) Delete(ctx context.Context, id int64) error {
 	}
 
 	if result.RowsAffected() == 0 {
-		return taskdomain.ErrNotFound
+		return taskdomain.ErrTempalteNotFound
 	}
 
 	return nil
@@ -292,16 +293,21 @@ type templateScanner interface {
 }
 
 func scanTemplate(scanner templateScanner) (*taskdomain.TaskTemplate, error) {
-	var template taskdomain.TaskTemplate
+	var (
+		template     taskdomain.TaskTemplate
+		everyNDays   sql.NullInt64
+		dayOfMonth   sql.NullInt64
+		monthParity  sql.NullString
+	)
 
 	if err := scanner.Scan(
 		&template.ID,
 		&template.Title,
 		&template.Description,
 		&template.Recurrence.Type,
-		&template.Recurrence.EveryNDays,
-		&template.Recurrence.DayOfMonth,
-		&template.Recurrence.MonthParity,
+		&everyNDays,
+		&dayOfMonth,
+		&monthParity,
 		&template.StartDate,
 		&template.EndDate,
 		&template.Active,
@@ -309,6 +315,18 @@ func scanTemplate(scanner templateScanner) (*taskdomain.TaskTemplate, error) {
 		&template.UpdatedAt,
 	); err != nil {
 		return nil, err
+	}
+
+	if everyNDays.Valid {
+		template.Recurrence.EveryNDays = int(everyNDays.Int64)
+	}
+
+	if dayOfMonth.Valid {
+		template.Recurrence.DayOfMonth = int(dayOfMonth.Int64)
+	}
+
+	if monthParity.Valid {
+		template.Recurrence.MonthParity = taskdomain.MonthParity(monthParity.String)
 	}
 
 	return &template, nil

@@ -43,7 +43,7 @@ func decodeJSON(r *http.Request, dst any) error {
 
 func writeUsecaseError(w http.ResponseWriter, err error) {
 	switch {
-	case errors.Is(err, taskdomain.ErrNotFound):
+	case errors.Is(err, taskdomain.ErrTaskNotFound):
 		writeError(w, http.StatusNotFound, err)
 	case errors.Is(err, templateusecase.ErrInvalidInput) || errors.Is(err, taskusecase.ErrInvalidInput):
 		writeError(w, http.StatusBadRequest, err)
